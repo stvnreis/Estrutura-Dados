@@ -45,6 +45,18 @@ void desempilha(pilhaEstatica *p, FILE *f){
     }
 }
 
+int paraBinario(int valor){
+    int binario = 0;
+    int base = 1;
+    while(valor > 0){
+        int resto = valor % 2;
+        binario += resto * base;
+        base *=10;
+        valor/=2;
+    }
+    return binario;
+}
+
 void verificaArgumentos(int qt){
     if(qt != 3){
         printf("ERRO: Quantidade incorreta de argumentos!");
@@ -71,10 +83,10 @@ void verificaArquivos(FILE *entrada, FILE *saida){
 }
 
 int main(int argc, char *argv[]){
-    //verificaArgumentos(argc);
+    verificaArgumentos(argc);
     
-    FILE *entrada = fopen("./entrada.txt", "r");
-    FILE *saida = fopen("./saida.txt", "w");
+    FILE *entrada = fopen(argv[1], "r");
+    FILE *saida = fopen(argv[2], "w");
     verificaArquivos(entrada, saida);
 
     pilhaEstatica p;
@@ -82,4 +94,11 @@ int main(int argc, char *argv[]){
     printf("%d\n", p.qt);
     
     empilha(&p, entrada);
+    int i;
+    for(i=TAM - 1; i>=0; i--){
+        p.arr[i] = paraBinario(p.arr[i]);
+    }
+    for(i=TAM - 1; i>=0; i--){
+        desempilha(&p, saida);
+    }
 }
