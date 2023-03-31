@@ -50,25 +50,31 @@ void empilha(pilhaEstatica *p, FILE *f){
 
 // convertendo o numero decimal recebido do arquivo de entrada e convertendo para binÃ¡rio
 char* paraBinario(int valor){
-    
     int aux = ceil(log2(valor + 1));
-    
+
     char *binario = (char*) malloc(sizeof(char) * aux+1);
-    binario[aux] = '\0';
-    
-	int i;
-    for (i = aux - 1; i >= 0; i--){
-    if (valor % 2 == 1){
-      binario[i] = '1';
+    if(valor != 0){
+        int i;
+        for (i = aux - 1; i >= 0; i--){
+            if (valor % 2 == 1){
+                binario[i] = '1';
+            }
+            else{
+                binario[i] = '0';
+            }
+
+            valor /= 2;
+        }
+
+        binario[aux] = '\0';
+
+        return binario;
     }
     else{
-      binario[i] = '0';
+        binario = "0\0";
+        
+        return binario;
     }
-
-    valor /= 2;
-  }
-
-  return binario;
 }
 
 // removendo os valores do topo da pilha e armazenando no arquivo
@@ -93,13 +99,14 @@ void verificaArgumentos(int qt){
     }       
 }
 
-// função que verifica se o conteúdo da linha do arquivo de entrada possue apenas números
+// funï¿½ï¿½o que verifica se o conteï¿½do da linha do arquivo de entrada possue apenas nï¿½meros
 void verificaLinha(char *l){
     int i = 0;
     while(l[i] != '\0' && l[i] != '\n'){
         if(l[i] < '0' || l[i] > '9'){
         	printf("%s\n", l);
-            printf("ERRO:\nCharactere inesperado encontrado no arquivo! Por favor, insira um arquivo que contenha apenas numeros decimais inteiros.\n");
+            printf("ERRO:\n");
+            printf("Charactere inesperado encontrado no arquivo! Por favor, insira um arquivo que contenha apenas numeros decimais inteiros.\n");
             exit(0);
         }
             i++;
@@ -107,28 +114,30 @@ void verificaLinha(char *l){
     return;
 }
 
-// armazenando o conteudo da linha do arquivo e chamando a função que verifica se possuem apenas numeros
+// armazenando o conteudo da linha do arquivo e chamando a funï¿½ï¿½o que verifica se possuem apenas numeros
 void verificaConteudo(FILE *entrada){
     char linha[100];
 	printf("verificando conteudo do arquivo!\n");
     while(!feof(entrada)){
-    	//fgets(linha, 100, entrada);
         fscanf(entrada, " %s", &linha);
         verificaLinha(linha);
         printf("Conteudo da linha: %s\n", linha);
     }
+
     rewind(entrada);
 }
 
-// função que verifica se o arquivo está vazio
+// funï¿½ï¿½o que verifica se o arquivo estï¿½ vazio
 void verificaVazio(FILE* entrada){
 	fseek(entrada, 0, SEEK_END);
 	
 	int size = ftell(entrada);
 	
 	if(size == 0){
-		printf("ERRO:\nArquivo de origin em branco!");
-		exit(1);
+		printf("ERRO:\n");
+        printf("Arquivo de origem em branco!\n");
+        fclose(entrada);
+		exit(0);
 	}
 	else{
 		rewind(entrada);
