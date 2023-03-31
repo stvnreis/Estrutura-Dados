@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
+#include <math.h>
 
-#define TAM 10
+#define TAM 45
 
 // Feito por:
 // Steven de Luca Reis de Oliveira, RA: 2484790
@@ -34,36 +36,52 @@ bool estaCheia(pilhaEstatica *p){
 // adicionando os valores recebidos atrÃ¡ves do arquivo na pilha e adicionando no topo 
 void empilha(pilhaEstatica *p, FILE *f){
     if(!estaCheia(p)){
-        while(!feof(f)){
+        rewind(f);
+		while(!feof(f)){
             fscanf(f, "%d\n", &p->arr[p->topo]);
             p->topo++;
             p->qt++;
         }
     }
+    else{
+    	printf("Pilha ja esta cheia!");
+	}
+}
+
+// convertendo o numero decimal recebido do arquivo de entrada e convertendo para binÃ¡rio
+char* paraBinario(int valor){
+    
+    int aux = ceil(log2(valor + 1));
+    
+    char *binario = (char*) malloc(sizeof(char) * aux+1);
+    binario[aux] = '\0';
+    
+	int i;
+    for (i = aux - 1; i >= 0; i--){
+    if (valor % 2 == 1){
+      binario[i] = '1';
+    }
+    else{
+      binario[i] = '0';
+    }
+
+    valor /= 2;
+  }
+
+  return binario;
 }
 
 // removendo os valores do topo da pilha e armazenando no arquivo
 void desempilha(pilhaEstatica *p, FILE *f){
     if(!estaVazia(p)){ 
         p->topo--;
-        fprintf(f, "%d\n", p->arr[p->topo]);
+        fprintf(f, " %s", paraBinario(p->arr[p->topo]));
         p->qt--;
+        
+		if(p->topo != 0){
+        	fprintf(f, "\n");
+		}
     }
-}
-
-// convertendo o numero decimal recebido do arquivo de entrada e convertendo para binÃ¡rio
-int paraBinario(int valor){
-    int binario = 0;
-    int base = 1;
-    
-    while(valor > 0){
-        int resto = valor % 2;
-        binario += resto * base;
-        base *=10;
-        valor/=2;
-    }
-    
-    return binario;
 }
 
 // verificando a quantidade de argumentos passados na execuÃ§Ã£o do programa
@@ -75,12 +93,13 @@ void verificaArgumentos(int qt){
     }       
 }
 
+// função que verifica se o conteúdo da linha do arquivo de entrada possue apenas números
 void verificaLinha(char *l){
     int i = 0;
-
     while(l[i] != '\0' && l[i] != '\n'){
         if(l[i] < '0' || l[i] > '9'){
-            printf("Charactere encontrado no arquivo! Por favor, insira um arquivo que contenha apenas numeros decimais.\n");
+        	printf("%s\n", l);
+            printf("ERRO:\nCharactere inesperado encontrado no arquivo! Por favor, insira um arquivo que contenha apenas numeros decimais inteiros.\n");
             exit(0);
         }
             i++;
@@ -88,22 +107,41 @@ void verificaLinha(char *l){
     return;
 }
 
-// armazenando o conteudo da linha do arquivo e verificando se possuem apenas numeros
+// armazenando o conteudo da linha do arquivo e chamando a função que verifica se possuem apenas numeros
 void verificaConteudo(FILE *entrada){
     char linha[100];
+	printf("verificando conteudo do arquivo!\n");
     while(!feof(entrada)){
-        printf("verificando conteudo!\n");
-        fscanf(entrada, " %[^\n]s\n", &linha);
-        printf("Conteudo da linha: %s\n", linha);
+    	//fgets(linha, 100, entrada);
+        fscanf(entrada, " %s", &linha);
         verificaLinha(linha);
+        printf("Conteudo da linha: %s\n", linha);
     }
     rewind(entrada);
+}
+
+// função que verifica se o arquivo está vazio
+void verificaVazio(FILE* entrada){
+	fseek(entrada, 0, SEEK_END);
+	
+	int size = ftell(entrada);
+	
+	if(size == 0){
+		printf("ERRO:\nArquivo de origin em branco!");
+		exit(1);
+	}
+	else{
+		rewind(entrada);
+		return;
+	}
+	
 }
 
 // verifica se os arquivos foram alocados com sucesso e chama a funÃ§Ã£o para verificar se o arquivo atende os requisitos
 void verificaArquivos(FILE *entrada, FILE *saida){
     if(entrada != NULL & saida != NULL){
-        verificaConteudo(entrada);
+        verificaVazio(entrada);
+		verificaConteudo(entrada);
         return;
     }
     else if(entrada == NULL && saida != NULL){
@@ -120,7 +158,7 @@ void verificaArquivos(FILE *entrada, FILE *saida){
     }
 }
 
-int main(int argc, char *argv[]){
+int main(int argc, const char *argv[]){
     verificaArgumentos(argc);
     
     FILE *entrada = fopen(argv[1], "r");
@@ -131,14 +169,14 @@ int main(int argc, char *argv[]){
     inicia(&p);
     
     empilha(&p, entrada);
+    
     int i;
-    for(i=TAM - 1; i>=0; i--){
-        p.arr[i] = paraBinario(p.arr[i]);
-    }
     for(i=TAM - 1; i>=0; i--){
         desempilha(&p, saida);
     }
 
     fclose(entrada);
     fclose(saida);
+    
+    return 0;
 }
