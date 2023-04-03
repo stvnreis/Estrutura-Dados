@@ -71,11 +71,11 @@ char* paraBinario(int valor){
   return binario;
 }
 
-// removendo os valores do topo da pilha e armazenando no arquivo
+// removendo os valores do topo da pilha e armazenando no arquivo de saida
 void desempilha(pilhaEstatica *p, FILE *f){
     if(!estaVazia(p)){ 
         p->topo--;
-        fprintf(f, " %s", paraBinario(p->arr[p->topo]));
+        fprintf(f, "%s", paraBinario(p->arr[p->topo]));
         p->qt--;
         
 		if(p->topo != 0){
@@ -85,10 +85,14 @@ void desempilha(pilhaEstatica *p, FILE *f){
 }
 
 // verificando a quantidade de argumentos passados na execuÃ§Ã£o do programa
-void verificaArgumentos(int qt){
+void verificaArgumentos(int qtdArg){
     // se quantidade de argumentos for diferente de 3, imprime o erro e encerra o programa
-    if(qt != 3){
-        printf("ERRO: Quantidade incorreta de argumentos!");
+    if(qtdArg != 3){
+        printf("ERRO: Quantidade incorreta de argumentos!\n");
+        printf("Argumentos necessarios:\n");
+        printf("1 - chamada do executavel do programa.\n");
+        printf("2 - caminho para o arquivo de entrada.\n");
+        printf("3 - caminho para o arquivo de saida.\n");
         exit(0);
     }       
 }
@@ -99,7 +103,8 @@ void verificaLinha(char *l){
     while(l[i] != '\0' && l[i] != '\n'){
         if(l[i] < '0' || l[i] > '9'){
         	printf("%s\n", l);
-            printf("ERRO:\nCharactere inesperado encontrado no arquivo! Por favor, insira um arquivo que contenha apenas numeros decimais inteiros.\n");
+            printf("ERRO:\n");
+            printf("Charactere inesperado encontrado no arquivo! Por favor, insira um arquivo que contenha apenas numeros decimais inteiros e positivos.\n");
             exit(0);
         }
             i++;
@@ -111,8 +116,8 @@ void verificaLinha(char *l){
 void verificaConteudo(FILE *entrada){
     char linha[100];
 	printf("verificando conteudo do arquivo!\n");
+	//para cada linha do arquivo, sera chamado a funcao que verifica o conteudo da linha
     while(!feof(entrada)){
-    	//fgets(linha, 100, entrada);
         fscanf(entrada, " %s", &linha);
         verificaLinha(linha);
         printf("Conteudo da linha: %s\n", linha);
@@ -120,14 +125,13 @@ void verificaConteudo(FILE *entrada){
     rewind(entrada);
 }
 
-// função que verifica se o arquivo está vazio
+// função que verifica se o arquivo está vazio e volta o ponteiro para o inicio do arquivo para que ele seja lido novamente
 void verificaVazio(FILE* entrada){
 	fseek(entrada, 0, SEEK_END);
-	
 	int size = ftell(entrada);
 	
 	if(size == 0){
-		printf("ERRO:\nArquivo de origin em branco!");
+		printf("ERRO:\nArquivo de origem em branco!");
 		exit(1);
 	}
 	else{
