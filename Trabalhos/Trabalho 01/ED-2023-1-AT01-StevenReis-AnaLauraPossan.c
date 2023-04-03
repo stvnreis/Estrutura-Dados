@@ -10,7 +10,7 @@
 // Steven de Luca Reis de Oliveira, RA: 2484790
 // Ana Laura Possan, RA: 2484650
 
-// definindo a estrutura de pilha estática com seu vetor, topo e quantidade
+// definindo a estrutura de pilha estatica com seu vetor, topo e quantidade
 typedef struct{
     int arr[TAM];
     int topo;
@@ -23,7 +23,7 @@ void inicia(pilhaEstatica *p){
     p->qt = 0;
 }
 
-// verificando se a pilha está vazia através da quantidade
+// verificando se a pilha esta vazia atraves da quantidade
 bool estaVazia(pilhaEstatica *p){
     return p->qt == 0 ? true : false;
 }
@@ -33,7 +33,7 @@ bool estaCheia(pilhaEstatica *p){
     return p->qt == TAM ? true : false;
 }
 
-// adicionando os valores recebidos atráves do arquivo na pilha e adicionando no topo 
+// adicionando os valores recebidos atraves do arquivo na pilha e adicionando no topo 
 void empilha(pilhaEstatica *p, FILE *f){
     if(!estaCheia(p)){
         rewind(f);
@@ -48,7 +48,7 @@ void empilha(pilhaEstatica *p, FILE *f){
 	}
 }
 
-// convertendo o numero decimal recebido do arquivo de entrada e convertendo para binário
+// convertendo o numero decimal recebido do arquivo de entrada e convertendo para binario
 char* paraBinario(int valor){
     
     int aux = ceil(log2(valor + 1));
@@ -84,7 +84,7 @@ void desempilha(pilhaEstatica *p, FILE *f){
     }
 }
 
-// verificando a quantidade de argumentos passados na execução do programa
+// verificando a quantidade de argumentos passados na execucao do programa
 void verificaArgumentos(int qtdArg){
     // se quantidade de argumentos for diferente de 3, imprime o erro e encerra o programa
     if(qtdArg != 3){
@@ -141,7 +141,7 @@ void verificaVazio(FILE* entrada){
 	
 }
 
-// verifica se os arquivos foram alocados com sucesso e chama a função para verificar se o arquivo atende os requisitos
+// verifica se os arquivos foram alocados com sucesso e chama a funcao para verificar se o arquivo atende os requisitos
 void verificaArquivos(FILE *entrada, FILE *saida){
     if(entrada != NULL & saida != NULL){
         verificaVazio(entrada);
