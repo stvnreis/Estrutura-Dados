@@ -46,6 +46,44 @@ bool inserir(noArvore **ar, int valor)
     }
 }
 
+bool pesquisar(noArvore **ar, int valor)
+{
+    if((*ar) == NULL)
+    {
+
+    }
+    else if((*ar)->valor == valor)
+    {
+        printf("%d \n", (*ar)->valor);
+        return true;
+    }
+    else if((*ar) -> valor == valor) 
+    {
+        return true;
+    }
+    else if((*ar)->valor > valor)
+    {
+        printf("esquerda\n");
+        pesquisar(&(*ar)->esquerda, valor);
+    }
+    else
+    {
+        printf("direita\n");
+        pesquisar(&(*ar)->direita, valor);
+    }
+}
+
+bool remover(noArvore **ar, int valor)
+{
+    if((*ar) == NULL)
+        return false;
+    else if((*ar)->valor == valor)
+    {
+        noArvore *rm = malloc (sizeof(noArvore));
+
+    }
+}
+
 void print(noArvore **ar)
 {
     if((*ar) == NULL)
@@ -82,5 +120,6 @@ int main()
     inserir(&raiz, 6);
     inserir(&raiz, 8);
     inserir(&raiz, 9);
+    pesquisar(&raiz, 9);
     preOrdem(&raiz);
 }
