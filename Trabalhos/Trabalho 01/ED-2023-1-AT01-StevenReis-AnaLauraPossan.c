@@ -10,7 +10,7 @@
 // Steven de Luca Reis de Oliveira, RA: 2484790
 // Ana Laura Possan, RA: 2484650
 
-// definindo a estrutura de pilha estática com seu vetor, topo e quantidade
+// definindo a estrutura de pilha estatica com seu vetor, topo e quantidade
 typedef struct{
     int arr[TAM];
     int topo;
@@ -23,7 +23,7 @@ void inicia(pilhaEstatica *p){
     p->qt = 0;
 }
 
-// verificando se a pilha está vazia através da quantidade
+// verificando se a pilha esta vazia atraves da quantidade
 bool estaVazia(pilhaEstatica *p){
     return p->qt == 0 ? true : false;
 }
@@ -33,7 +33,7 @@ bool estaCheia(pilhaEstatica *p){
     return p->qt == TAM ? true : false;
 }
 
-// adicionando os valores recebidos atráves do arquivo na pilha e adicionando no topo 
+// adicionando os valores recebidos atraves do arquivo na pilha e adicionando no topo 
 void empilha(pilhaEstatica *p, FILE *f){
     if(!estaCheia(p)){
         rewind(f);
@@ -48,7 +48,7 @@ void empilha(pilhaEstatica *p, FILE *f){
 	}
 }
 
-// convertendo o numero decimal recebido do arquivo de entrada e convertendo para binário
+// convertendo o numero decimal recebido do arquivo de entrada e convertendo para binario
 char* paraBinario(int valor){
     int aux = ceil(log2(valor + 1));
 
@@ -77,11 +77,11 @@ char* paraBinario(int valor){
     }
 }
 
-// removendo os valores do topo da pilha e armazenando no arquivo
+// removendo os valores do topo da pilha e armazenando no arquivo de saida
 void desempilha(pilhaEstatica *p, FILE *f){
     if(!estaVazia(p)){ 
         p->topo--;
-        fprintf(f, " %s", paraBinario(p->arr[p->topo]));
+        fprintf(f, "%s", paraBinario(p->arr[p->topo]));
         p->qt--;
         
 		if(p->topo != 0){
@@ -90,11 +90,15 @@ void desempilha(pilhaEstatica *p, FILE *f){
     }
 }
 
-// verificando a quantidade de argumentos passados na execução do programa
-void verificaArgumentos(int qt){
+// verificando a quantidade de argumentos passados na execucao do programa
+void verificaArgumentos(int qtdArg){
     // se quantidade de argumentos for diferente de 3, imprime o erro e encerra o programa
-    if(qt != 3){
-        printf("ERRO: Quantidade incorreta de argumentos!");
+    if(qtdArg != 3){
+        printf("ERRO: Quantidade incorreta de argumentos!\n");
+        printf("Argumentos necessarios:\n");
+        printf("1 - chamada do executavel do programa.\n");
+        printf("2 - caminho para o arquivo de entrada.\n");
+        printf("3 - caminho para o arquivo de saida.\n");
         exit(0);
     }       
 }
@@ -106,7 +110,11 @@ void verificaLinha(char *l){
         if(l[i] < '0' || l[i] > '9'){
         	printf("%s\n", l);
             printf("ERRO:\n");
+<<<<<<< HEAD:Trabalhos/Trabalho 01/main.c
             printf("Charactere inesperado encontrado no arquivo! Por favor, insira um arquivo que contenha apenas numeros decimais inteiros.\n");
+=======
+            printf("Charactere inesperado encontrado no arquivo! Por favor, insira um arquivo que contenha apenas numeros decimais inteiros e positivos.\n");
+>>>>>>> 3d155b6c9f6df46eb025081b973a3d99d8858ae7:Trabalhos/Trabalho 01/ED-2023-1-AT01-StevenReis-AnaLauraPossan.c
             exit(0);
         }
             i++;
@@ -118,6 +126,7 @@ void verificaLinha(char *l){
 void verificaConteudo(FILE *entrada){
     char linha[100];
 	printf("verificando conteudo do arquivo!\n");
+	//para cada linha do arquivo, sera chamado a funcao que verifica o conteudo da linha
     while(!feof(entrada)){
         fscanf(entrada, " %s", &linha);
         verificaLinha(linha);
@@ -127,17 +136,25 @@ void verificaConteudo(FILE *entrada){
     rewind(entrada);
 }
 
+<<<<<<< HEAD:Trabalhos/Trabalho 01/main.c
 // fun��o que verifica se o arquivo est� vazio
+=======
+// fun��o que verifica se o arquivo est� vazio e volta o ponteiro para o inicio do arquivo para que ele seja lido novamente
+>>>>>>> 3d155b6c9f6df46eb025081b973a3d99d8858ae7:Trabalhos/Trabalho 01/ED-2023-1-AT01-StevenReis-AnaLauraPossan.c
 void verificaVazio(FILE* entrada){
 	fseek(entrada, 0, SEEK_END);
-	
 	int size = ftell(entrada);
 	
 	if(size == 0){
+<<<<<<< HEAD:Trabalhos/Trabalho 01/main.c
 		printf("ERRO:\n");
         printf("Arquivo de origem em branco!\n");
         fclose(entrada);
 		exit(0);
+=======
+		printf("ERRO:\nArquivo de origem em branco!");
+		exit(1);
+>>>>>>> 3d155b6c9f6df46eb025081b973a3d99d8858ae7:Trabalhos/Trabalho 01/ED-2023-1-AT01-StevenReis-AnaLauraPossan.c
 	}
 	else{
 		rewind(entrada);
@@ -146,7 +163,7 @@ void verificaVazio(FILE* entrada){
 	
 }
 
-// verifica se os arquivos foram alocados com sucesso e chama a função para verificar se o arquivo atende os requisitos
+// verifica se os arquivos foram alocados com sucesso e chama a funcao para verificar se o arquivo atende os requisitos
 void verificaArquivos(FILE *entrada, FILE *saida){
     if(entrada != NULL & saida != NULL){
         verificaVazio(entrada);
