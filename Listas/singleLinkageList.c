@@ -16,7 +16,7 @@ typedef struct List
 
 void start(List *l)
 {
-	printf("Iniciando lista");
+	printf("Iniciando lista\n");
     l->start = NULL;
     l->qtElements = 0;
 }
@@ -35,12 +35,16 @@ bool insert(List *l, int newValue)
     if(isEmpty(l))
     {
         l->start = newNode;
+        l->qtElements++;
+        
+        return true;
     }
     else if(newValue < l->start->value)
     {
         newNode->next = l->start;
         l->start = newNode;
 
+		l->qtElements++;
         return true;
     }
     else if(newValue > l->start->value)
@@ -55,6 +59,7 @@ bool insert(List *l, int newValue)
         newNode->next = aux->next;
         aux->next = newNode;
 
+		l->qtElements++;
         return true;
     }
     else
@@ -62,7 +67,43 @@ bool insert(List *l, int newValue)
         return false;
     }
 
-    l->qtElements++;
+}
+
+bool removeVl(List *l, int rmValue)
+{
+	if(!isEmpty(l))
+	{
+		if(rmValue == l->start->value)
+		{
+			nodeList *rm = l->start;
+			l->start = l->start->next;
+			
+			free(rm);
+			
+			l->qtElements--;
+			
+			return true;
+		}
+		nodeList *aux = l->start;
+	
+		while(aux->next->value != rmValue && aux->next != NULL)
+		{
+			aux = aux->next;
+		}
+		
+		nodeList *rm = aux->next;
+			
+		aux->next = aux->next->next;
+		free(rm);
+		
+		l->qtElements--;
+		
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void printList(List *l)
@@ -97,6 +138,7 @@ int main()
     insert(&l, 60);
     insert(&l, 2);
     insert(&l, 1000);
+    removeVl(&l, 1000);
     
     printList(&l);
 
