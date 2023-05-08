@@ -6,7 +6,7 @@
 //definicao da estrutura da arvore
 typedef struct noArvore
 {
-    char *palavra;
+    char palavra[20];
     struct noArvore *esquerda;
     struct noArvore *direita;
 }noArvore;
@@ -27,18 +27,19 @@ bool inserir(noArvore **no, char *novaPalavra)
 	if((*no) == NULL)
 	{
 		(*no) = malloc (sizeof(noArvore));
-		(*no)->palavra = novaPalavra;
+		// (*no)->palavra = novaPalavra;
+		strcpy((*no)->palavra, novaPalavra);
 		(*no)->esquerda = NULL;
 		(*no)->direita = NULL;
 		
 		return true;
 	}
-	else if((*no)->palavra == novaPalavra)
+	else if(strcmp(novaPalavra, (*no)->palavra) == 0)
 	{
 		printf("Palavra ja existente na arvore!\n");
 		return false;
 	}
-	else if(novaPalavra < (*no)->palavra)
+	else if(strcmp(novaPalavra, (*no)->palavra) < 0)
 	{
 		inserir(&(*no)->esquerda, novaPalavra);
 	}
@@ -48,13 +49,36 @@ bool inserir(noArvore **no, char *novaPalavra)
 	}
 }
 
+void print(noArvore **no)
+{
+    if((*no) == NULL)
+    {
+        //printf("ponteiro vazio\n");
+        return;
+    }
+    else
+    {
+        printf("%s ", (*no)->palavra	);
+        print(&(*no)->esquerda);
+        print(&(*no)->direita);
+    }
+}
+
 int main()
 {
+	FILE *entrada = fopen("./entrada.txt", "r");
     noArvore *raiz;
 	iniciar(&raiz);
 	
-    inserir(&raiz, "Steven");
-    printf("%s\n", raiz->palavra);
-    printf("%d", inserir(&raiz, "Ana"));
+	char palavra[52];
+
+	while(fscanf(entrada, " %s", palavra) != EOF)
+	{
+		inserir(&raiz, palavra);
+	}
+
+	print(&raiz);
+
+	fclose(entrada);
     return 0;
 }
