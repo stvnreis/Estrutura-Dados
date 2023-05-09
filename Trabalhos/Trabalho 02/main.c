@@ -12,6 +12,7 @@ int paginaAtual;
 typedef struct noArvore
 {
     char palavra[20];
+	int paginas[50];
 	int quantidade;
     struct noArvore *esquerda;
     struct noArvore *direita;
@@ -38,6 +39,8 @@ bool inserir(noArvore **no, char *novaPalavra)
 		(*no)->esquerda = NULL;
 		(*no)->direita = NULL;
 		(*no)->quantidade = 1;
+		(*no)->paginas[(*no)->quantidade - 1] = paginaAtual;
+		(*no)->paginas[(*no)->quantidade] = -1;
 		
 		return true;
 	}
@@ -45,6 +48,10 @@ bool inserir(noArvore **no, char *novaPalavra)
 	{
 		// printf("Palavra ja existente na arvore!\n");
 		(*no)->quantidade++;
+		if((*no)->paginas[(*no)->quantidade - 2] == paginaAtual)
+			return false;
+		(*no)->paginas[(*no)->quantidade - 1] = paginaAtual;
+		(*no)->paginas[(*no)->quantidade] = -1;
 		return false;
 	}
 	else if(strcmp(novaPalavra, (*no)->palavra) < 0)
@@ -66,8 +73,15 @@ void printArquivo(FILE *s, noArvore **no)
     }
     else
     {
-		printf("%s %d\n", (*no)->palavra, (*no)->quantidade);
-		fprintf(s, "%s %d\n", (*no)->palavra, (*no)->quantidade);
+		char paginas[100];
+		printf("%s %d", (*no)->palavra, (*no)->paginas[0]);
+		int i;
+		for(i=1; (*no)->paginas[i] != -1; i++)
+		{
+			printf(", %d", (*no)->paginas[i]);
+		}
+		printf("\n");
+		// fprintf(s, "%s %d\n", (*no)->palavra, (*no)->quantidade);
         printArquivo(s, &(*no)->esquerda);
         printArquivo(s, &(*no)->direita);
     }
