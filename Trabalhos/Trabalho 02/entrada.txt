@@ -1,6 +1,15 @@
-<termos:Steven,Ana>
+<termos:celula,arvores,chave,busca>
+<page:1>
+Arvores binarias de busca
+Arvores binarias generalizam a ideia de listas encadeadas. Da mesma forma, arvores binarias de busca generalizam a ideia de listas encadeadas crescentes
 <page:2>
-Steven Ana
-<page:55>
-Ana
-Joao Steven Ana
+conhecidas como search trees. Dizemos que uma arvore binaria e de busca (ou de pesquisa) se cada uma de suas
+celulas tem a seguinte propriedade: a chave da celula e 
+<page:3>
+maior ou igual que a chave de qualquer celula na subarvore esquerda e menor ou igual a chave de qualquer celula
+na subarvore direita
+<page:4>
+Em outras palavras, se r e o endereco de uma celula qualquer, se q e o endereco de alguma celula na subarvore esquerda
+de r e se s e o endereco de alguma celula na subarvore direita de r entao
+<page:5>
+q.chave menor ou igual a r.chave menor ou igual a s.chave

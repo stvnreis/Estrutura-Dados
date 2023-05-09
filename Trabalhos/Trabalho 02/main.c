@@ -6,14 +6,18 @@
 // Steven de Luca Reis de Oliveira, RA: 2484790
 // Ana Laura Possan, RA: 2484650
 
-int paginaAtual;
+
+// variaveis de Controle
+// pagina atual indica qual foi o numero lido em <page:__> e slot_vazio indica qual slot do vetor de strings "termos" e o proximo livre
+int paginaAtual, slot_vazio = 0;
+char termos[20][250];
 
 //definicao da estrutura da arvore
 typedef struct noArvore
 {
     char palavra[20];
 	int paginas[50];
-	int quantidade;
+	int quantidadePaginas;
     struct noArvore *esquerda;
     struct noArvore *direita;
 }noArvore;
@@ -47,8 +51,8 @@ bool inserir(noArvore **no, char *novaPalavra)
 	else if(strcmp(novaPalavra, (*no)->palavra) == 0)
 	{
 		// printf("Palavra ja existente na arvore!\n");
-		(*no)->quantidade++;
-		if((*no)->paginas[(*no)->quantidade - 2] == paginaAtual)
+		//(*no)->quantidadePaginas++;
+		if((*no)->paginas[(*no)->quantidadePaginas - 2] == paginaAtual)
 			return false;
 		(*no)->paginas[(*no)->quantidade - 1] = paginaAtual;
 		(*no)->paginas[(*no)->quantidade] = -1;
@@ -64,6 +68,17 @@ bool inserir(noArvore **no, char *novaPalavra)
 	}
 }
 
+bool estaEmTermos(char palavra[])
+{
+	int i;
+	for(i=0; i<= slot_vazio; i++)
+	{
+		if(strcmp(palavra, termos[i]) == 0)
+			return true;
+	}
+	return false;
+}
+
 void printArquivo(FILE *s, noArvore **no)
 {
 	if((*no) == NULL)
@@ -73,15 +88,17 @@ void printArquivo(FILE *s, noArvore **no)
     }
     else
     {
-		char paginas[100];
-		printf("%s %d", (*no)->palavra, (*no)->paginas[0]);
-		int i;
-		for(i=1; (*no)->paginas[i] != -1; i++)
-		{
-			printf(", %d", (*no)->paginas[i]);
+    	if(estaEmTermos((*no)->palavra))
+    	{
+    		char paginas[100];
+			fprintf(s, "%s %d", (*no)->palavra, (*no)->paginas[0]);	
+			int i;
+			for(i=1; i < (*no)->quantidade; i++)
+			{
+				fprintf(s, ", %d", (*no)->paginas[i]);
+			}
+			fprintf(s, "\n");
 		}
-		printf("\n");
-		// fprintf(s, "%s %d\n", (*no)->palavra, (*no)->quantidade);
         printArquivo(s, &(*no)->esquerda);
         printArquivo(s, &(*no)->direita);
     }
@@ -97,6 +114,24 @@ int getNumeroPagina(char *str)
 	return atoi(numero);
 }
 
+void removeVirgula(char str[])
+{
+	int i =8, j=0;
+	while(str[i] != '>')
+	{
+		if(str[i] == ',')
+		{
+			i++;
+			slot_vazio++;
+			j=0;
+			continue;
+		}
+		termos[slot_vazio][j] = str[i];
+		i++;
+		j++;
+	}
+}
+
 // ler todo o arquivo e inserir as palavras na arvore
 void lerArquivo(FILE *e, noArvore **no)
 {
@@ -105,16 +140,26 @@ void lerArquivo(FILE *e, noArvore **no)
 	{
 		if(strncmp(palavra, "<termos:", 8) == 0)
 		{
-			printf("termos\n", palavra);
+			//printf("termos\n", palavra);
+			removeVirgula(palavra);
 			continue;			
 		}
 		else if(strncmp(palavra, "<page:", 6) == 0)
 		{
 			paginaAtual = getNumeroPagina(palavra);
-			printf("Paginas %d\n", paginaAtual);
+			//printf("Pagina %d\n", paginaAtual);
 			continue;
 		}
 		inserir(&(*no), palavra);
+	}
+}
+
+void printTermos()
+{
+	int i;
+	for(i=0; i <= slot_vazio; i++)
+	{
+		printf("%s\n", termos[i]);
 	}
 }
 
@@ -127,9 +172,9 @@ int main()
 	
 	lerArquivo(entrada, &raiz);
 
-	printf("Arvore:\n");
+	//printf("Arvore:\n");
 	printArquivo(saida, &raiz);
-
+	printTermos();
 	// printf("%d", paginaAtual);
 
 	fclose(entrada);
