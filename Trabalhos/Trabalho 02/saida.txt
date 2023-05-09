@@ -1,4 +1,0 @@
-arvores 1
-busca 1, 2
-celula 2, 3, 4
-chave 2, 3

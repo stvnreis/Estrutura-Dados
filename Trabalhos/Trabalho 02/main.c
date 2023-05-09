@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
 // Steven de Luca Reis de Oliveira, RA: 2484790
 // Ana Laura Possan, RA: 2484650
 
@@ -27,11 +26,13 @@ void iniciar(noArvore **raiz)
     (*raiz) = NULL;
 }
 
+// verifica se a arvore esta vazia
 bool estaVazia(noArvore **raiz)
 {
 	return (*raiz) == NULL ? true : false;
 }
 
+// verifica se a pagina atual esta no vetor de paginas do no
 bool verificaPaginas(noArvore **no)
 {
 	int i;
@@ -79,6 +80,7 @@ bool inserir(noArvore **no, char *novaPalavra)
 	}
 }
 
+// verifica se a palavra esta no vetor de string
 bool estaEmTermos(char palavra[])
 {
 	int i;
@@ -90,10 +92,13 @@ bool estaEmTermos(char palavra[])
 	return false;
 }
 
+// printa as informacoes no arquivo de saida
 void printArquivo(FILE *s, noArvore **no)
 {
 	if(!(*no) == NULL)
     {
+    	// se a palavra esta no vetor de string, sera printado todas suas informacoes
+    	// print de informacoes em pre-ordem (no -> esquerda ->direita)
     	if(estaEmTermos((*no)->palavra))
     	{
     		char paginas[100];
@@ -162,10 +167,61 @@ void lerArquivo(FILE *e, noArvore **no)
 	}
 }
 
+bool estaVazioArquivo(FILE *f)
+{
+	fseek(f, 0, SEEK_END);
+	int tamanhoArquivo = ftell(f);
+	
+	rewind(f);
+	
+	if(tamanhoArquivo == 0)
+		return true;
+	else
+		return false;
+}
+
+// verifica se houve erro na criacao dos ponteiros para os arquvios correspondentes
+void verificaArquivos(FILE *e, FILE *s)
+{
+	if(e == NULL && s != NULL)
+	{
+		printf("ERRO\n");
+		printf("Arquivo de entrada nao encontrado!\n");
+		exit(1);
+	}
+	else if(e != NULL && s == NULL)
+	{
+		printf("Erro na criacao do arquivo de saida!\n");
+		exit(1);
+	}
+	else if(e != NULL && s == NULL)
+	{
+		printf("Erro na criacao de ambos arquivos!\n");
+		exit(1);
+	}
+}
+
+// faz tratamento de erro nos arquivos caso arquivo de entrada esteja vazio ou nao seja encontrado
+void trataArquivos(FILE *e, FILE *s)
+{
+	verificaArquivos(e, s);
+	if(estaVazioArquivo(e))
+	{
+		printf("ERRO: Arquivo de entrada vazio!\n");
+		exit(1);
+	}
+	else
+	{
+		return;		
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	FILE *entrada = fopen("./entrada.txt", "r");
 	FILE *saida = fopen("./saida.txt", "w");
+    
+    trataArquivos(entrada, saida);
     
 	noArvore *raiz;
 	iniciar(&raiz);
