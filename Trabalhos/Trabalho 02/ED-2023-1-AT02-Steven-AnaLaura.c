@@ -70,7 +70,7 @@ bool inserir(noArvore **no, char *novaPalavra)
 		}
 		return false;
 	}
-	// caso a palavra a ser inserida for "menor" em ordem alfabética, sera direcionado para a subarvore esquerda, se nao, para a direita.
+	// caso a palavra a ser inserida for "menor" em ordem alfabï¿½tica, sera direcionado para a subarvore esquerda, se nao, para a direita.
 	else if(strcasecmp(novaPalavra, (*no)->palavra) < 0)
 	{
 		inserir(&(*no)->esquerda, novaPalavra);
@@ -87,7 +87,7 @@ bool estaEmTermos(char palavra[])
 	int i;
 	for(i=0; i<= slot_vazio; i++)
 	{
-		if(strcasecmp(palavra, termos[i]) == 0)
+		if(strcasecmp(palavra, termos[i]) == 0) // compara ambas as strings em UPPER CASE, tornando a comparacao case insensitive
 			return true;
 	}
 	return false;
@@ -111,8 +111,8 @@ void printArquivo(FILE *s, noArvore **no)
 			}
 			fprintf(s, "\n");
 		}
-        printArquivo(s, &(*no)->esquerda);
-        printArquivo(s, &(*no)->direita);
+        printArquivo(s, &(*no)->esquerda);// indo para subarvore esquerda
+        printArquivo(s, &(*no)->direita); // indo para subarvore direita
     }
 }
 
@@ -121,20 +121,24 @@ int getNumeroPagina(char *str)
 {
 	int i, j = 0, tamanho = strlen(str);
 	char *numero;
-	numero = strtok(str, "<page:");
+
+	// removendo caracteres da string e deixando apenas o numero
+	numero = strtok(str, "<page:"); 
 	numero = strtok(numero, ">");
 
-	return atoi(numero);
+	return atoi(numero); // retorno da conversao do numero restante da string em inteiro
 }
 
 // le a string de termos a partir da posicao 8 (correspondente ao <termos:)
 void removeVirgula(char str[])
 {
 	int i =8, j=0;
+	// copiando caracter a caracter enquanto diferente de '<' e ',' e incluindo em termos[]
 	while(str[i] != '>')
 	{
 		if(str[i] == ',')
 		{
+			// caso encontre uma virgula, significa que a palavra terminou e seguira para o proximo termo encontrado
 			i++;
 			slot_vazio++;
 			j=0;
@@ -188,7 +192,7 @@ bool estaVazioArquivo(FILE *f)
 	fseek(f, 0, SEEK_END);
 	int tamanhoArquivo = ftell(f);
 	
-	rewind(f);
+	rewind(f); // reiniciando ponteiro do arquivo
 	
 	if(tamanhoArquivo == 0)
 		return true;
@@ -223,6 +227,7 @@ void trataArquivos(FILE *e, FILE *s)
 	verificaArquivos(e, s);
 	if(estaVazioArquivo(e))
 	{
+		// caso arquivo esteja vazio, o programa sera encerrado
 		printf("ERRO: Arquivo de entrada vazio!\n");
 		exit(1);
 	}
@@ -232,6 +237,7 @@ void trataArquivos(FILE *e, FILE *s)
 	}
 }
 
+// funcao criada para ajudar a validar se todos os termos foram identificados e incluidos na variavel de controle
 void printTermos()
 {
 	int i =0;
@@ -242,19 +248,38 @@ void printTermos()
 	}
 }
 
+// verifica quantidade de argumentos passados na chamada da execucao do programa. Se igual a 3, segue sua execucao normalmente
+void verificaArgumentos(int arg)
+{
+	if(arg == 3)
+		return;
+	else if(arg < 3)
+	{
+		printf("Numero de argumentos insuficientes, insira tres argumentos seguindo a seguinte ordem:\n");
+		printf("./main 'arquivo_de_entrada.txt 'arquivo_de_saida.txt'\n");
+		exit(1);
+	}
+	else
+	{
+		printf("Numero de argumentos nao esta de acordo com o necessario, insira tres argumentos seguindo a seguinte ordem:\n");
+		printf("./main 'arquivo_de_entrada.txt 'arquivo_de_saida.txt'\n");
+		exit(1);
+	}
+}
+
 int main(int argc, char *argv[])
 {
-	FILE *entrada = fopen("./entrada.txt", "r");
-	FILE *saida = fopen("./saida.txt", "w");
-    
+	FILE *entrada = fopen(argv[1], "r");
+	FILE *saida = fopen(argv[2], "w");
+    verificaArgumentos(argc);
     trataArquivos(entrada, saida);
     
 	noArvore *raiz;
 	iniciar(&raiz);
 	
-	lerArquivo(entrada, &raiz);
+	lerArquivo(entrada, &raiz); // chamada de leitura do arquivo que chama a insercao na arvore binaria
 	printTermos();
-	printArquivo(saida, &raiz);
+	printArquivo(saida, &raiz); // chamada de insercao no arquivo que chama o print em pre-ordem da arvore binaria
 
 	fclose(entrada);
 	fclose(saida);
