@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <strings.h>
 // Steven de Luca Reis de Oliveira, RA: 2484790
 // Ana Laura Possan, RA: 2484650
 
@@ -60,7 +61,7 @@ bool inserir(noArvore **no, char *novaPalavra)
 		return true;
 	}
 	// caso a palavra ja exista na arvore, sera adicionado a pagina atual em seu vetor de paginas
-	else if(strcmp(novaPalavra, (*no)->palavra) == 0) 
+	else if(strcasecmp(novaPalavra, (*no)->palavra) == 0) 
 	{
 		if(!verificaPaginas(&(*no)))
 		{
@@ -70,7 +71,7 @@ bool inserir(noArvore **no, char *novaPalavra)
 		return false;
 	}
 	// caso a palavra a ser inserida for "menor" em ordem alfabética, sera direcionado para a subarvore esquerda, se nao, para a direita.
-	else if(strcmp(novaPalavra, (*no)->palavra) < 0)
+	else if(strcasecmp(novaPalavra, (*no)->palavra) < 0)
 	{
 		inserir(&(*no)->esquerda, novaPalavra);
 	}
@@ -86,7 +87,7 @@ bool estaEmTermos(char palavra[])
 	int i;
 	for(i=0; i<= slot_vazio; i++)
 	{
-		if(strcmp(palavra, termos[i]) == 0)
+		if(strcasecmp(palavra, termos[i]) == 0)
 			return true;
 	}
 	return false;
@@ -100,7 +101,7 @@ void printArquivo(FILE *s, noArvore **no)
     	// se a palavra esta no vetor de string, sera printado todas suas informacoes
     	// print de informacoes em pre-ordem (no -> esquerda ->direita)
     	if(estaEmTermos((*no)->palavra))
-    	{
+    	{	
     		char paginas[100];
 			fprintf(s, "%s %d", (*no)->palavra, (*no)->paginas[0]);	
 			int i;
@@ -145,6 +146,19 @@ void removeVirgula(char str[])
 	}
 }
 
+// remove ',' ' ' e ';' do final da string, assim como "()"
+char *trataString(char str[])
+{
+	int tamanho = strlen(str);
+	if(str[tamanho - 1] == ',' || str[tamanho - 1] == '.' || str[tamanho - 1] == ';')
+	{
+		str[tamanho - 1] = '\0';
+	}
+	str = strtok(str, "(");
+	str = strtok(str, ")");
+	return str;
+}
+
 // ler todo o arquivo e inserir as palavras na arvore
 void lerArquivo(FILE *e, noArvore **no)
 {
@@ -163,10 +177,12 @@ void lerArquivo(FILE *e, noArvore **no)
 			paginaAtual = getNumeroPagina(palavra);
 			continue;
 		}
+		strcpy(palavra, trataString(palavra));
 		inserir(&(*no), palavra);
 	}
 }
 
+// verifica se o arquivo esta vazio a partir da posicao do ponteiro do arquivo
 bool estaVazioArquivo(FILE *f)
 {
 	fseek(f, 0, SEEK_END);
@@ -216,6 +232,16 @@ void trataArquivos(FILE *e, FILE *s)
 	}
 }
 
+void printTermos()
+{
+	int i =0;
+	while(i <= slot_vazio)
+	{
+		printf("%s\n", termos[i]);
+		i++;
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	FILE *entrada = fopen("./entrada.txt", "r");
@@ -227,6 +253,7 @@ int main(int argc, char *argv[])
 	iniciar(&raiz);
 	
 	lerArquivo(entrada, &raiz);
+	printTermos();
 	printArquivo(saida, &raiz);
 
 	fclose(entrada);
