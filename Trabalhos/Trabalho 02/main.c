@@ -48,6 +48,7 @@ bool verificaPaginas(noArvore **no)
 // inserir palavras na arvore seguindo ordem alfabetica
 bool inserir(noArvore **no, char *novaPalavra)
 {
+	// caso em que palavra ainda nao foi inserida na arvore ou e a primeira a ser inserida
 	if((*no) == NULL)
 	{
 		(*no) = malloc (sizeof(noArvore));
