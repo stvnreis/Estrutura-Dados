@@ -233,16 +233,14 @@ void heapSort(int arr[], int n) {
 }
 
 int calcula_insertion(int *arr, int size){
-    int *arr_1 = copia_arr(arr, size);
+    int *arr_tmp = copia_arr(arr, size);
     clock_t start, end;
     
     start = clock();
-    insertionSort(arr_1, size);
+    insertionSort(arr_tmp, size);
     end = clock();
-    
-    //print_arr(arr_1, size);
-    
-    free(arr_1);
+        
+    free(arr_tmp);
     
     return (end - start)/(CLOCKS_PER_SEC/1000);
 }
@@ -254,8 +252,6 @@ int calcula_selection(int *arr, int size){
     start = clock();
     selectionSort(arr_tmp, size);
     end = clock();
-    
-    //print_arr(arr_tmp, size);
     
     free(arr_tmp);
     
@@ -269,9 +265,7 @@ int calcula_bubble(int *arr, int size){
     start = clock();
     bubbleSort(arr_tmp, size);
     end = clock();
-    
-    //print_arr(arr_tmp, size);
-    
+        
     free(arr_tmp);
     
     return (end - start)/(CLOCKS_PER_SEC/1000);
@@ -284,9 +278,7 @@ int calcula_merge(int *arr, int first, int last){
     start = clock();
     mergeSort(arr_tmp, first, last);
     end = clock();
-    
-    //print_arr(arr_tmp, size);
-    
+        
     free(arr_tmp);
     
     return (end - start)/(CLOCKS_PER_SEC/1000);
@@ -299,9 +291,7 @@ int calcula_heap(int *arr, int size){
     start = clock();
     heapSort(arr_tmp, size);
     end = clock();
-    
-    //print_arr(arr_tmp, size);
-    
+        
     free(arr_tmp);
     
     return (end - start)/(CLOCKS_PER_SEC/1000);
@@ -314,9 +304,7 @@ int calcula_quick(int *arr, int first, int last){
     start = clock();
     quickSort(arr_tmp, first, last);
     end = clock();
-    
-    //print_arr(arr_tmp, size);
-    
+        
     free(arr_tmp);
     
     return (end - start)/(CLOCKS_PER_SEC/1000);
