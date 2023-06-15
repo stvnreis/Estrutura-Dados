@@ -6,7 +6,6 @@
 // Ana Laura Possan, RA: 2484650
 
 // vetor que ira armazenar a quantidade de comparacoes para cada algoritmo
-int cmp[6];
 
 void crescente(int *arr, int size){
     int i;
@@ -36,29 +35,25 @@ void aleatorio(int *arr, int size){
 int *gera_arr(int size, char order)
 {
     int *arr = malloc(size * sizeof(int));
-    switch(order){
-        case 'c':
-            printf("Ordem crescente\n");
-            crescente(arr, size);
-            
-            return arr;
-
-        case 'd':
-            printf("Ordem decrescente\n");
-            decrescente(arr, size);
-            
-            return arr;
-        
-        case 'r':
-            printf("Ordem aleatoria\n");
-            aleatorio(arr, size);
-            
-            return arr;
-        
-        default:
-            printf("Ordem desconhecida, encerrando programa!");
-            exit(-1);
+    if(order == 'c'){
+        crescente(arr, size);
     }
+    else if(order == 'd'){
+        decrescente(arr, size);
+    }
+    else if(order == 'r'){
+        aleatorio(arr, size);
+    }
+    else{
+        printf("Ordem desconhecida, insira uma das tres opcoes:\n");
+        printf("c -- > gerar array em ordem crescente, de 0 ate o tamanho escolhido.\n");
+        printf("d -- > gerar array em ordem decrescente, de 0 ate o tamanho escolhido.\n");
+        printf("r -- > gerar array com valores aleatorios entre 1 e 3200.\n");
+
+        exit(-1);
+    }
+
+    return arr;
 }
 
 void print_arr(int *arr, int size){
@@ -89,7 +84,7 @@ void insertionSort(int arr[], int n) {
         j = i - 1;
         while (j >= 0 && arr[j] > key) {
             arr[j + 1] = arr[j];
-            cmp[0]++;
+        
             j = j - 1;
         }
         arr[j + 1] = key;
@@ -102,7 +97,7 @@ void selectionSort(int arr[], int n) {
         min_idx = i;
         for (j = i+1; j < n; j++) {
             if (arr[j] < arr[min_idx]){
-                cmp[1]++;
+            
                 min_idx = j;
             }
         }
@@ -117,7 +112,7 @@ void bubbleSort(int arr[], int n) {
     for (i = 0; i < n-1; i++) {
         for (j = 0; j < n-i-1; j++) {
             if (arr[j] > arr[j+1]) {
-                cmp[2]++;
+            
                 int temp = arr[j];
                 arr[j] = arr[j+1];
                 arr[j+1] = temp;
@@ -148,20 +143,18 @@ void merge(int arr[], int left, int middle, int right) {
             arr[k] = R[j];
             j++;
         }
-        cmp[3]++;
+    
         k++;
     }
     while (i < n1) {
         arr[k] = L[i];
         i++;
         k++;
-        cmp[3]++;
     }
     while (j < n2) {
         arr[k] = R[j];
         j++;
         k++;
-        cmp[3]++;
     }
 }
 
@@ -174,13 +167,13 @@ void mergeSort(int arr[], int left, int right) {
     }
 }
 
-// estruturando quickSort
+// estruturando quickSort --> dividir para conquistar 
 int partition(int arr[], int low, int high) {
     int pivot = arr[high];
     int i = (low - 1);
     for (int j = low; j <= high - 1; j++) {
         if (arr[j] < pivot) {
-            cmp[4]++;
+        
             i++;
             int temp = arr[i];
             arr[i] = arr[j];
@@ -217,14 +210,13 @@ void heapify(int arr[], int n, int i) {
         arr[largest] = temp;
         heapify(arr, n, largest);
     }
-    cmp[5]++;
 }
 
 void heapSort(int arr[], int n) {
     for (int i = n / 2 - 1; i >= 0; i--){
         heapify(arr, n, i);
     }
-    for (int i = n - 1; i > 0; i--) {
+    for (int i = n - 1; i > 0; i--){
         int temp = arr[0];
         arr[0] = arr[i];
         arr[i] = temp;
@@ -232,17 +224,20 @@ void heapSort(int arr[], int n) {
     }
 }
 
+
+// funcoes que calculam o tempo de execucao de cada algoritmo de ordenacao
 int calcula_insertion(int *arr, int size){
     int *arr_tmp = copia_arr(arr, size);
     clock_t start, end;
     
-    start = clock();
+    start = clock(); // guarda o valor da hora em que foi iniciado a ordenacao
     insertionSort(arr_tmp, size);
-    end = clock();
+    end = clock(); // guarda o valor da hora em que foi finalizado a ordenacao
         
     free(arr_tmp);
-    
-    return (end - start)/(CLOCKS_PER_SEC/1000);
+
+    // retorna o valor final - inicial / quantidade de ticks por segundo --> em milisegundos
+    return (end - start)/(CLOCKS_PER_SEC/1000); 
 }
 
 int calcula_selection(int *arr, int size){
@@ -312,18 +307,22 @@ int calcula_quick(int *arr, int first, int last){
 
 int main(){
     int size;
-
+    char order;
+    
     printf("Qual o tamanho do vetor?");
     scanf("%d", &size);
+    printf("Qual a ordem de insercao dos valores?");
+    scanf(" %c", &order);
     
-    int *arr = gera_arr(size, 'c');
+    int *arr = gera_arr(size, order);
     int *novo_arr = copia_arr(arr, size);
-    printf("tempo percorrido insertionSort: %d, comparacoes realizadas: %d\n", calcula_insertion(arr, size), cmp[0]);
-    printf("tempo percorrido selectionSort: %d, comparacoes realizadas: %d\n", calcula_selection(arr, size), cmp[1]);
-    printf("tempo percorrido bubbleSort: %d, comparacoes realizadas: %d\n", calcula_bubble(arr, size), cmp[2]);
-    printf("tempo percorrido mergeSort: %d, comparacoes realizadas: %d\n", calcula_merge(arr, 0, size-1), cmp[3]);
-    printf("tempo percorrido quickSort: %d, comparacoes realizadas: %d\n", calcula_quick(arr, 0, size-1), cmp[4]);
-    printf("tempo percorrido heapSort: %d, comparacoes realizadas: %d\n", calcula_heap(arr, size), cmp[5]);
+   
+    printf("tempo percorrido insertionSort: %d\n", calcula_insertion(arr, size));
+    printf("tempo percorrido selectionSort: %d\n", calcula_selection(arr, size));
+    printf("tempo percorrido bubbleSort: %d\n", calcula_bubble(arr, size));
+    printf("tempo percorrido mergeSort: %d\n", calcula_merge(arr, 0, size-1));
+    printf("tempo percorrido quickSort: %d\n", calcula_quick(arr, 0, size-1));
+    printf("tempo percorrido heapSort: %d\n", calcula_heap(arr, size));
 
     free(arr);
 
