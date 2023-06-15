@@ -5,9 +5,12 @@
 // Steven de Luca Reis de Oliveira, RA: 2484790
 // Ana Laura Possan, RA: 2484650
 
+// vetor que ira armazenar a quantidade de comparacoes para cada algoritmo
+int cmp[6];
+
 void crescente(int *arr, int size){
     int i;
-    
+
     for(i=0; i<size; i++){
         arr[i] = i+1;
     }
@@ -37,18 +40,21 @@ int *gera_arr(int size, char order)
         case 'c':
             printf("Ordem crescente\n");
             crescente(arr, size);
+            
             return arr;
-            break;
+
         case 'd':
             printf("Ordem decrescente\n");
             decrescente(arr, size);
+            
             return arr;
-            break;
+        
         case 'r':
             printf("Ordem aleatoria\n");
             aleatorio(arr, size);
+            
             return arr;
-            break;
+        
         default:
             printf("Ordem desconhecida, encerrando programa!");
             exit(-1);
@@ -83,6 +89,7 @@ void insertionSort(int arr[], int n) {
         j = i - 1;
         while (j >= 0 && arr[j] > key) {
             arr[j + 1] = arr[j];
+            cmp[0]++;
             j = j - 1;
         }
         arr[j + 1] = key;
@@ -94,8 +101,10 @@ void selectionSort(int arr[], int n) {
     for (i = 0; i < n-1; i++) {
         min_idx = i;
         for (j = i+1; j < n; j++) {
-            if (arr[j] < arr[min_idx])
+            if (arr[j] < arr[min_idx]){
+                cmp[1]++;
                 min_idx = j;
+            }
         }
         int temp = arr[min_idx];
         arr[min_idx] = arr[i];
@@ -108,6 +117,7 @@ void bubbleSort(int arr[], int n) {
     for (i = 0; i < n-1; i++) {
         for (j = 0; j < n-i-1; j++) {
             if (arr[j] > arr[j+1]) {
+                cmp[2]++;
                 int temp = arr[j];
                 arr[j] = arr[j+1];
                 arr[j+1] = temp;
@@ -138,17 +148,20 @@ void merge(int arr[], int left, int middle, int right) {
             arr[k] = R[j];
             j++;
         }
+        cmp[3]++;
         k++;
     }
     while (i < n1) {
         arr[k] = L[i];
         i++;
         k++;
+        cmp[3]++;
     }
     while (j < n2) {
         arr[k] = R[j];
         j++;
         k++;
+        cmp[3]++;
     }
 }
 
@@ -167,6 +180,7 @@ int partition(int arr[], int low, int high) {
     int i = (low - 1);
     for (int j = low; j <= high - 1; j++) {
         if (arr[j] < pivot) {
+            cmp[4]++;
             i++;
             int temp = arr[i];
             arr[i] = arr[j];
@@ -203,11 +217,13 @@ void heapify(int arr[], int n, int i) {
         arr[largest] = temp;
         heapify(arr, n, largest);
     }
+    cmp[5]++;
 }
 
 void heapSort(int arr[], int n) {
-    for (int i = n / 2 - 1; i >= 0; i--)
+    for (int i = n / 2 - 1; i >= 0; i--){
         heapify(arr, n, i);
+    }
     for (int i = n - 1; i > 0; i--) {
         int temp = arr[0];
         arr[0] = arr[i];
@@ -218,7 +234,7 @@ void heapSort(int arr[], int n) {
 
 int calcula_insertion(int *arr, int size){
     int *arr_1 = copia_arr(arr, size);
-    clock_t start, end, diff;
+    clock_t start, end;
     
     start = clock();
     insertionSort(arr_1, size);
@@ -233,7 +249,7 @@ int calcula_insertion(int *arr, int size){
 
 int calcula_selection(int *arr, int size){
     int *arr_tmp = copia_arr(arr, size);
-    clock_t start, end, diff;
+    clock_t start, end;
     
     start = clock();
     selectionSort(arr_tmp, size);
@@ -246,16 +262,80 @@ int calcula_selection(int *arr, int size){
     return (end - start)/(CLOCKS_PER_SEC/1000);
 }
 
-int main()
-{
+int calcula_bubble(int *arr, int size){
+    int *arr_tmp = copia_arr(arr, size);
+    clock_t start, end;
+    
+    start = clock();
+    bubbleSort(arr_tmp, size);
+    end = clock();
+    
+    //print_arr(arr_tmp, size);
+    
+    free(arr_tmp);
+    
+    return (end - start)/(CLOCKS_PER_SEC/1000);
+}
+
+int calcula_merge(int *arr, int first, int last){
+    int *arr_tmp = copia_arr(arr, last);
+    clock_t start, end;
+    
+    start = clock();
+    mergeSort(arr_tmp, first, last);
+    end = clock();
+    
+    //print_arr(arr_tmp, size);
+    
+    free(arr_tmp);
+    
+    return (end - start)/(CLOCKS_PER_SEC/1000);
+}
+
+int calcula_heap(int *arr, int size){
+    int *arr_tmp = copia_arr(arr, size);
+    clock_t start, end;
+    
+    start = clock();
+    heapSort(arr_tmp, size);
+    end = clock();
+    
+    //print_arr(arr_tmp, size);
+    
+    free(arr_tmp);
+    
+    return (end - start)/(CLOCKS_PER_SEC/1000);
+}
+
+int calcula_quick(int *arr, int first, int last){
+    int *arr_tmp = copia_arr(arr, last);
+    clock_t start, end;
+    
+    start = clock();
+    quickSort(arr_tmp, first, last);
+    end = clock();
+    
+    //print_arr(arr_tmp, size);
+    
+    free(arr_tmp);
+    
+    return (end - start)/(CLOCKS_PER_SEC/1000);
+}
+
+int main(){
     int size;
+
     printf("Qual o tamanho do vetor?");
     scanf("%d", &size);
     
-    int *arr = gera_arr(size, 'r');
+    int *arr = gera_arr(size, 'c');
     int *novo_arr = copia_arr(arr, size);
-    printf("tempo percorrido insertionSort: %d\n", calcula_insertion(arr, size));
-    printf("tempo percorrido selectionSort: %d\n", calcula_selection(arr, size));
+    printf("tempo percorrido insertionSort: %d, comparacoes realizadas: %d\n", calcula_insertion(arr, size), cmp[0]);
+    printf("tempo percorrido selectionSort: %d, comparacoes realizadas: %d\n", calcula_selection(arr, size), cmp[1]);
+    printf("tempo percorrido bubbleSort: %d, comparacoes realizadas: %d\n", calcula_bubble(arr, size), cmp[2]);
+    printf("tempo percorrido mergeSort: %d, comparacoes realizadas: %d\n", calcula_merge(arr, 0, size-1), cmp[3]);
+    printf("tempo percorrido quickSort: %d, comparacoes realizadas: %d\n", calcula_quick(arr, 0, size-1), cmp[4]);
+    printf("tempo percorrido heapSort: %d, comparacoes realizadas: %d\n", calcula_heap(arr, size), cmp[5]);
 
     free(arr);
 
