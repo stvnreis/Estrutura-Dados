@@ -1,0 +1,6 @@
+tempo percorrido insertionSort em milisegundos: 0 comparacoes realizadas: 26  Vetor ordenado: [ 277 | 286 | 584 | 766 | 836 | 1551 | 1807 | 2196 | 2300 | 2320 ]
+tempo percorrido selectionSort em milisegundos: 0 comparacoes realizadas: 45 Vetor ordenado: [ 277 | 286 | 584 | 766 | 836 | 1551 | 1807 | 2196 | 2300 | 2320 ]
+tempo percorrido bubbleSort em milisegundos: 0 comparacoes realizadas: 45 Vetor ordenado: [ 277 | 286 | 584 | 766 | 836 | 1551 | 1807 | 2196 | 2300 | 2320 ]
+tempo percorrido mergeSort em milisegundos: 0 comparacoes realizadas: 23 Vetor ordenado: [ 277 | 286 | 584 | 766 | 836 | 1551 | 1807 | 2196 | 2320 | 2320 ]
+tempo percorrido heapSort em milisegundos: 0 comparacoes realizadas: 27 Vetor ordenado: [ 277 | 286 | 584 | 766 | 836 | 1551 | 1807 | 2196 | 2320 | 2320 ]
+tempo percorrido quickSort em milisegundos: 0 comparacoes realizadas: 17 Vetor ordenado: [ 277 | 286 | 584 | 766 | 836 | 1551 | 1807 | 2196 | 2300 | 2320 ]
